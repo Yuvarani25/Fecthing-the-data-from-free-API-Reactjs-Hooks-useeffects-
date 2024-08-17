@@ -1,17 +1,34 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ReactDOM from 'react-dom';
+import React, {useState,useEffect} from 'react';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+function Userdemo(){
+    const[user,setUsers]=useState([]);
+    const[loading,setLoading]=useState(true);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+    useEffect(()=>{
+        fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(data=>{
+        setUsers(data);
+        setLoading(false);
+      })
+      .catch(error=>{
+        console.error("if it is not loading, will be error msg");
+        setLoading(false);
+      });
+    },[]);
+    if(loading){
+        return<p>Loading</p>;
+    }
+    return(
+        <div>
+            <h2>List out the users in API</h2>
+            <ul style={{listStyleType:"none"}}>
+                {user.map(user=>(
+                    <li key = {user.id} >{user.id} : {user.name}</li>
+                )
+                )}
+            </ul>
+        </div>
+    );
+}ReactDOM.render(<Userdemo/>,document.getElementById('root'))
